@@ -111,6 +111,26 @@
 
       </div><!-- #game-screen -->
 
+      <!-- PIXEL PAINTER GAME -->
+      <div class="content" id="drawing-screen">
+
+        <div class="drawing-header">
+          <div class="drawing-title">★ PIXEL PAINTER ★</div>
+          <div class="drawing-controls">
+            <span>SHAPES: <span class="blob-counter" id="blob-count">0</span></span>
+            <button class="btn-clear" onclick="clearCanvas()">[ CLEAR ]</button>
+          </div>
+        </div>
+
+        <canvas id="paint-canvas"></canvas>
+
+        <div class="drawing-footer">
+          <button class="btn-back-menu" onclick="goHome()">◄ BACK TO MENU</button>
+          <div class="drawing-hint">PRESS ANY KEY OR CLICK TO PAINT!</div>
+        </div>
+
+      </div><!-- #drawing-screen -->
+
     </div><!-- .screen -->
   </div><!-- .screen-bezel -->
 
@@ -125,5 +145,6 @@
 
 <script src="main.js"></script>
 <script src="game-numbers.js"></script>
+<script src="game-drawing.js"></script>
 </body>
 </html>
