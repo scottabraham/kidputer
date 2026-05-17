@@ -121,16 +121,29 @@ function _drawMaze() {
   }
 
   // Emoji rendering
-  const ems = Math.round(Math.min(cellW, cellH) * 0.62);
-  ctx.font          = `${ems}px serif`;
-  ctx.textAlign     = 'center';
-  ctx.textBaseline  = 'middle';
+  const ems = Math.round(Math.min(cellW, cellH) * 0.72);
+  ctx.font         = `${ems}px serif`;
+  ctx.textAlign    = 'center';
+  ctx.textBaseline = 'middle';
 
-  // Carrot at goal
-  ctx.fillText('🥕', ox + (cols-1)*cellW + cellW/2, oy + (rows-1)*cellH + cellH/2);
+  const carrotX = ox + (cols-1)*cellW + cellW/2;
+  const carrotY = oy + (rows-1)*cellH + cellH/2;
+  const bunnyX  = ox + mazePlayer.c*cellW + cellW/2;
+  const bunnyY  = oy + mazePlayer.r*cellH + cellH/2;
 
-  // Rabbit at player position
-  ctx.fillText('🐰', ox + mazePlayer.c*cellW + cellW/2, oy + mazePlayer.r*cellH + cellH/2);
+  // Carrot — orange glow then sharp render on top
+  ctx.shadowColor = 'rgba(255,140,0,0.9)';
+  ctx.shadowBlur  = Math.round(ems * 0.5);
+  ctx.fillText('🥕', carrotX, carrotY);
+  ctx.shadowBlur  = 0;
+  ctx.fillText('🥕', carrotX, carrotY);
+
+  // Bunny — soft white glow then sharp render on top
+  ctx.shadowColor = 'rgba(255,255,220,0.95)';
+  ctx.shadowBlur  = Math.round(ems * 0.45);
+  ctx.fillText('🐰', bunnyX, bunnyY);
+  ctx.shadowBlur  = 0;
+  ctx.fillText('🐰', bunnyX, bunnyY);
 }
 
 function mazeMove(dir) {
