@@ -58,11 +58,11 @@
             <div class="tile-title">PIXEL PAINTER</div>
             <div class="tile-subtitle">DRAW YOUR OWN PICTURES!</div>
           </div>
-          <div class="menu-tile tile-magenta" tabindex="0" onclick="launchApp('stories')">
+          <div class="menu-tile tile-magenta" tabindex="0" onclick="launchApp('maze')">
             <div class="corner corner-tl"></div><div class="corner corner-br"></div>
-            <div class="tile-icon text-magenta">[ * ]</div>
-            <div class="tile-title">STORY TIME</div>
-            <div class="tile-subtitle">READ AND LISTEN TO STORIES!</div>
+            <div class="tile-icon text-magenta">🐰🥕</div>
+            <div class="tile-title">BUNNY MAZE</div>
+            <div class="tile-subtitle">HELP BUNNY FIND HER CARROT!</div>
           </div>
         </div>
 
@@ -131,6 +131,39 @@
 
       </div><!-- #drawing-screen -->
 
+      <!-- BUNNY MAZE GAME -->
+      <div class="content" id="maze-screen">
+
+        <div class="maze-header">
+          <div class="maze-title">🐰 BUNNY MAZE 🥕</div>
+          <div class="maze-hint">USE ARROW KEYS OR D-PAD TO MOVE BUNNY!</div>
+        </div>
+
+        <canvas id="maze-canvas"></canvas>
+
+        <div class="maze-footer">
+          <button class="btn-back-menu" onclick="goHome()">◄ MENU</button>
+          <div class="maze-dpad">
+            <div class="dpad-row"><button class="dpad-btn" onclick="mazeMove('up')">▲</button></div>
+            <div class="dpad-row">
+              <button class="dpad-btn" onclick="mazeMove('left')">◄</button>
+              <div class="dpad-center"></div>
+              <button class="dpad-btn" onclick="mazeMove('right')">►</button>
+            </div>
+            <div class="dpad-row"><button class="dpad-btn" onclick="mazeMove('down')">▼</button></div>
+          </div>
+          <button class="btn-back-menu" onclick="mazePlayAgain()">NEW MAZE</button>
+        </div>
+
+        <div id="maze-win-overlay">
+          <div class="maze-win-emoji">🐰🥕</div>
+          <div class="maze-win-title">YAY!</div>
+          <div class="maze-win-phrase" id="maze-win-phrase">BUNNY FOUND HER CARROT!</div>
+          <button class="btn-play-again" onclick="mazePlayAgain()">[ PLAY AGAIN! ]</button>
+        </div>
+
+      </div><!-- #maze-screen -->
+
     </div><!-- .screen -->
   </div><!-- .screen-bezel -->
 
@@ -146,5 +179,6 @@
 <script src="main.js"></script>
 <script src="game-numbers.js"></script>
 <script src="game-drawing.js"></script>
+<script src="game-maze.js"></script>
 </body>
 </html>

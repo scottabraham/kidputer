@@ -97,7 +97,7 @@ const bootLines = [
   { text:'  SPELLING BEE .......... LOADED!',     color:'#00ffff', delay:2100 },
   { text:'  NUMBER FUN ........... LOADED!',      color:'#00ffff', delay:2250 },
   { text:'  PIXEL PAINTER ........ LOADED!',      color:'#00ffff', delay:2400 },
-  { text:'  STORY TIME ........... LOADED!',      color:'#00ffff', delay:2550 },
+  { text:'  BUNNY MAZE ........... LOADED!',      color:'#00ffff', delay:2550 },
   { text:'',                                       color:'#33ff33', delay:2650 },
   { text:'*** ALL SYSTEMS GO! HAVE FUN! ***',     color:'#ff44ff', delay:2750 },
   { text:'',                                       color:'#33ff33', delay:2850 },
@@ -161,6 +161,10 @@ function launchApp(app) {
     playFanfare();
     document.getElementById('main-screen').style.display = 'none';
     startPixelPainter();
+  } else if (app === 'maze') {
+    playFanfare();
+    document.getElementById('main-screen').style.display = 'none';
+    startBunnyMaze();
   } else {
     const names = { spelling:'SPELLING BEE', stories:'STORY TIME' };
     const main = document.getElementById('main-screen');
