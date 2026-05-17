@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KIDPUTER 64</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="monitor-shell">
+  <div class="monitor-brand">★ KIDPUTER SYSTEMS INC. ★ MODEL KP-64 ★</div>
+
+  <div class="screen-bezel">
+    <div class="screen" id="main-crt">
+      <div class="vignette"></div>
+      <div class="curvature"></div>
+      <div class="flicker"></div>
+
+      <!-- KEY DISPLAY — always on top -->
+      <div id="key-display"></div>
+
+      <!-- BOOT SCREEN -->
+      <div class="content" id="boot-screen"></div>
+
+      <!-- MAIN MENU -->
+      <div class="content" id="main-screen">
+        <div class="header-bar">
+          <div class="logo">
+            <span class="logo-k">K</span><span class="logo-i">I</span><span class="logo-d">D</span><span class="logo-p">P</span><span class="logo-u">U</span><span class="logo-t">T</span><span class="logo-e">E</span><span class="logo-r">R</span>&nbsp;<span class="logo-6">6</span><span class="logo-4">4</span>
+          </div>
+          <div class="header-right">
+            <div id="clock-display">TIME: 00:00:00</div>
+            <div>MEMORY: 64K FREE</div>
+          </div>
+        </div>
+
+        <div class="welcome-msg">*** WELCOME, YOUNG PROGRAMMER! WHAT WOULD YOU LIKE TO DO TODAY? ***</div>
+
+        <div class="menu-grid">
+          <div class="menu-tile tile-amber" tabindex="0" onclick="launchApp('spelling')">
+            <div class="corner corner-tl"></div><div class="corner corner-br"></div>
+            <div class="tile-badge badge-new">NEW!</div>
+            <div class="tile-icon text-amber">A B C</div>
+            <div class="tile-title">SPELLING BEE</div>
+            <div class="tile-subtitle">LEARN TO SPELL FUN WORDS!</div>
+          </div>
+          <div class="menu-tile tile-cyan" tabindex="0" onclick="launchApp('numbers')">
+            <div class="corner corner-tl"></div><div class="corner corner-br"></div>
+            <div class="tile-badge badge-fun">FUN!</div>
+            <div class="tile-icon text-cyan">1 2 3</div>
+            <div class="tile-title">NUMBER FUN</div>
+            <div class="tile-subtitle">COUNT AND ADD WITH FRIENDS!</div>
+          </div>
+          <div class="menu-tile" tabindex="0" onclick="launchApp('drawing')">
+            <div class="corner corner-tl"></div><div class="corner corner-br"></div>
+            <div class="tile-icon text-glow">░▒▓█</div>
+            <div class="tile-title">PIXEL PAINTER</div>
+            <div class="tile-subtitle">DRAW YOUR OWN PICTURES!</div>
+          </div>
+          <div class="menu-tile tile-magenta" tabindex="0" onclick="launchApp('stories')">
+            <div class="corner corner-tl"></div><div class="corner corner-br"></div>
+            <div class="tile-icon text-magenta">[ * ]</div>
+            <div class="tile-title">STORY TIME</div>
+            <div class="tile-subtitle">READ AND LISTEN TO STORIES!</div>
+          </div>
+        </div>
+
+        <div class="status-bar">
+          <div class="text-dim">KIDPUTER OS v1.0 &nbsp;|&nbsp; READY<span class="cursor-blink"></span></div>
+          <div class="stars-row text-amber">★ ★ ★ ★ ★</div>
+          <div class="text-dim">PRESS A KEY TO SELECT</div>
+        </div>
+      </div>
+
+      <!-- NUMBER FUN GAME -->
+      <div class="content" id="game-screen">
+
+        <div class="game-header">
+          <div class="game-title">★ NUMBER FUN ★</div>
+          <div class="score-panel">
+            <div>SCORE: <span class="score-val" id="score-val">0</span></div>
+            <div>STREAK: <span class="score-val" id="streak-val">0</span> 🔥</div>
+          </div>
+        </div>
+
+        <div class="star-strip" id="star-strip"></div>
+
+        <div class="question-zone">
+          <div class="question-label" id="q-label">HOW MUCH IS...</div>
+
+          <div class="emoji-equation" id="emoji-row"></div>
+
+          <div class="question-sum" id="q-text"></div>
+
+          <div class="answer-row">
+            <input class="answer-box" id="answer-input" type="number" min="0" max="99" autocomplete="off" placeholder="?">
+            <button class="btn-check" onclick="checkAnswer()">[ OK ]</button>
+          </div>
+
+          <div class="numpad" id="numpad"></div>
+        </div>
+
+        <button class="btn-back-menu" onclick="goHome()">◄ BACK TO MENU</button>
+
+        <!-- Feedback overlay -->
+        <div class="feedback-flash" id="feedback-flash">
+          <div class="flash-big"  id="flash-emoji"></div>
+          <div class="flash-text" id="flash-text"></div>
+        </div>
+
+      </div><!-- #game-screen -->
+
+    </div><!-- .screen -->
+  </div><!-- .screen-bezel -->
+
+  <div class="monitor-bottom">
+    <div class="monitor-knob"></div>
+    <div class="monitor-knob"></div>
+    <div class="power-led"></div>
+    <div class="monitor-knob"></div>
+    <div class="monitor-knob"></div>
+  </div>
+</div>
+
+<script src="main.js"></script>
+<script src="game-numbers.js"></script>
+</body>
+</html>
