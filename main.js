@@ -157,8 +157,12 @@ function launchApp(app) {
     playFanfare();
     document.getElementById('main-screen').style.display = 'none';
     startNumberFun();
+  } else if (app === 'drawing') {
+    playFanfare();
+    document.getElementById('main-screen').style.display = 'none';
+    startPixelPainter();
   } else {
-    const names = { spelling:'SPELLING BEE', drawing:'PIXEL PAINTER', stories:'STORY TIME' };
+    const names = { spelling:'SPELLING BEE', stories:'STORY TIME' };
     const main = document.getElementById('main-screen');
     main.innerHTML = `
       <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1em;">
