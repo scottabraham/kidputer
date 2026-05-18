@@ -226,15 +226,6 @@ function startBunnyMaze() {
   });
   ro.observe(mazeCanvas);
 
-  mazeKeyHandler = e => {
-    if (!mazeActive) return;
-    const map = {
-      ArrowUp: 'up', ArrowDown: 'down', ArrowLeft: 'left', ArrowRight: 'right',
-      w: 'up', s: 'down', a: 'left', d: 'right',
-    };
-    if (map[e.key]) { e.preventDefault(); mazeMove(map[e.key]); }
-  };
-  document.addEventListener('keydown', mazeKeyHandler);
 }
 
 function stopBunnyMaze() {

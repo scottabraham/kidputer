@@ -98,11 +98,11 @@ function makeNumBtn(label, wide, fn) {
   return btn;
 }
 
-function numpadPress(digit) {
+function numpadPress(digit, withSound = true) {
   if (G.locked) return;
   const inp = document.getElementById('answer-input');
   if (inp.value.length < 2) inp.value += digit;
-  playKeyTone(digit); showKeyBubble(digit);
+  if (withSound) { playKeyTone(digit); showKeyBubble(digit); }
 }
 
 function renderQ() {
@@ -262,7 +262,4 @@ function startNumberFun() {
   generateQ();
   renderQ();
 
-  document.getElementById('answer-input').addEventListener('keydown', e => {
-    if (e.key === 'Enter') { e.preventDefault(); checkAnswer(); }
-  });
 }

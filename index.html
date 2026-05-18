@@ -20,6 +20,11 @@
       <!-- KEY DISPLAY — always on top -->
       <div id="key-display"></div>
 
+      <!-- OFF SCREEN — shown when machine is powered off -->
+      <div class="content" id="off-screen">
+        <div class="off-hint">PRESS POWER BUTTON OR ANY KEY TO START</div>
+      </div>
+
       <!-- BOOT SCREEN -->
       <div class="content" id="boot-screen"></div>
 
@@ -40,6 +45,7 @@
         <div class="menu-grid">
           <div class="menu-tile tile-amber" tabindex="0" onclick="launchApp('spelling')">
             <div class="corner corner-tl"></div><div class="corner corner-br"></div>
+            <div class="tile-key">1</div>
             <div class="tile-badge badge-new">NEW!</div>
             <div class="tile-icon text-amber">A B C</div>
             <div class="tile-title">SPELLING BEE</div>
@@ -47,6 +53,7 @@
           </div>
           <div class="menu-tile tile-cyan" tabindex="0" onclick="launchApp('numbers')">
             <div class="corner corner-tl"></div><div class="corner corner-br"></div>
+            <div class="tile-key">2</div>
             <div class="tile-badge badge-fun">FUN!</div>
             <div class="tile-icon text-cyan">1 2 3</div>
             <div class="tile-title">NUMBER FUN</div>
@@ -54,12 +61,14 @@
           </div>
           <div class="menu-tile" tabindex="0" onclick="launchApp('drawing')">
             <div class="corner corner-tl"></div><div class="corner corner-br"></div>
+            <div class="tile-key">3</div>
             <div class="tile-icon text-glow">░▒▓█</div>
             <div class="tile-title">PIXEL PAINTER</div>
             <div class="tile-subtitle">DRAW YOUR OWN PICTURES!</div>
           </div>
           <div class="menu-tile tile-magenta" tabindex="0" onclick="launchApp('maze')">
             <div class="corner corner-tl"></div><div class="corner corner-br"></div>
+            <div class="tile-key">4</div>
             <div class="tile-icon text-magenta">🐰🥕</div>
             <div class="tile-title">BUNNY MAZE</div>
             <div class="tile-subtitle">HELP BUNNY FIND HER CARROT!</div>
@@ -69,7 +78,7 @@
         <div class="status-bar">
           <div class="text-dim">KIDPUTER OS v1.0 &nbsp;|&nbsp; READY<span class="cursor-blink"></span></div>
           <div class="stars-row text-amber">★ ★ ★ ★ ★</div>
-          <div class="text-dim">PRESS A KEY TO SELECT</div>
+          <div class="text-dim">PRESS 1 · 2 · 3 · 4 TO SELECT</div>
         </div>
       </div>
 
@@ -101,7 +110,7 @@
           <div class="numpad" id="numpad"></div>
         </div>
 
-        <button class="btn-back-menu" onclick="goHome()">◄ BACK TO MENU</button>
+        <button class="btn-back-menu" onclick="goHome()">◄ MENU  [X]</button>
 
         <!-- Feedback overlay -->
         <div class="feedback-flash" id="feedback-flash">
@@ -118,15 +127,15 @@
           <div class="drawing-title">★ PIXEL PAINTER ★</div>
           <div class="drawing-controls">
             <span>SHAPES: <span class="blob-counter" id="blob-count">0</span></span>
-            <button class="btn-clear" onclick="clearCanvas()">[ CLEAR ]</button>
+            <button class="btn-clear" onclick="clearCanvas()">[ CLEAR  C ]</button>
           </div>
         </div>
 
         <canvas id="paint-canvas"></canvas>
 
         <div class="drawing-footer">
-          <button class="btn-back-menu" onclick="goHome()">◄ BACK TO MENU</button>
-          <div class="drawing-hint">PRESS ANY KEY OR CLICK TO PAINT!</div>
+          <button class="btn-back-menu" onclick="goHome()">◄ MENU  [X]</button>
+          <div class="drawing-hint">ANY KEY OR CLICK = PAINT &nbsp;·&nbsp; C = CLEAR &nbsp;·&nbsp; X = MENU</div>
         </div>
 
       </div><!-- #drawing-screen -->
@@ -136,13 +145,13 @@
 
         <div class="maze-header">
           <div class="maze-title">🐰 BUNNY MAZE 🥕</div>
-          <div class="maze-hint">USE ARROW KEYS OR D-PAD TO MOVE BUNNY!</div>
+          <div class="maze-hint">ARROW KEYS OR WASD TO MOVE &nbsp;·&nbsp; X = MENU</div>
         </div>
 
         <canvas id="maze-canvas"></canvas>
 
         <div class="maze-footer">
-          <button class="btn-back-menu" onclick="goHome()">◄ MENU</button>
+          <button class="btn-back-menu" onclick="goHome()">◄ MENU  [X]</button>
           <div class="maze-dpad">
             <div class="dpad-row"><button class="dpad-btn" onclick="mazeMove('up')">▲</button></div>
             <div class="dpad-row">
@@ -160,9 +169,20 @@
           <div class="maze-win-title">YAY!</div>
           <div class="maze-win-phrase" id="maze-win-phrase">BUNNY FOUND HER CARROT!</div>
           <button class="btn-play-again" onclick="mazePlayAgain()">[ PLAY AGAIN! ]</button>
+          <div class="maze-win-hint">PRESS ANY KEY TO PLAY AGAIN</div>
         </div>
 
       </div><!-- #maze-screen -->
+
+      <!-- COMING SOON SCREEN -->
+      <div class="content" id="coming-screen">
+        <div class="coming-inner">
+          <div class="coming-title" id="coming-title">*** COMING SOON ***</div>
+          <div class="coming-msg">MORE GAMES ON THE WAY!<span class="cursor-blink"></span></div>
+          <div class="coming-sub">PRESS ANY KEY OR X TO RETURN TO MENU</div>
+          <button class="btn-back-menu" onclick="goHome()">◄ MENU  [X]</button>
+        </div>
+      </div><!-- #coming-screen -->
 
     </div><!-- .screen -->
   </div><!-- .screen-bezel -->
@@ -170,7 +190,7 @@
   <div class="monitor-bottom">
     <div class="monitor-knob"></div>
     <div class="monitor-knob"></div>
-    <div class="power-led"></div>
+    <div class="power-btn" id="power-btn" onclick="togglePower()" title="POWER"></div>
     <div class="monitor-knob"></div>
     <div class="monitor-knob"></div>
   </div>
