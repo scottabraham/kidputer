@@ -43,13 +43,12 @@
         <div class="welcome-msg">*** WELCOME, YOUNG PROGRAMMER! WHAT WOULD YOU LIKE TO DO TODAY? ***</div>
 
         <div class="menu-grid">
-          <div class="menu-tile tile-amber" tabindex="0" onclick="launchApp('spelling')">
+          <div class="menu-tile tile-unicorn" tabindex="0" onclick="launchApp('spelling')">
             <div class="corner corner-tl"></div><div class="corner corner-br"></div>
             <div class="tile-key">1</div>
-            <div class="tile-badge badge-new">NEW!</div>
-            <div class="tile-icon text-amber">A B C</div>
-            <div class="tile-title">SPELLING BEE</div>
-            <div class="tile-subtitle">LEARN TO SPELL FUN WORDS!</div>
+            <div class="tile-icon">🦄✨</div>
+            <div class="tile-title">UNICORN SPELL</div>
+            <div class="tile-subtitle">GUIDE THE UNICORN TO THE CASTLE!</div>
           </div>
           <div class="menu-tile tile-cyan" tabindex="0" onclick="launchApp('numbers')">
             <div class="corner corner-tl"></div><div class="corner corner-br"></div>
@@ -174,6 +173,52 @@
 
       </div><!-- #maze-screen -->
 
+      <!-- UNICORN SPELL GAME -->
+      <div class="content" id="spelling-screen">
+
+        <div class="spell-header">
+          <div class="spell-title">🦄 UNICORN SPELL ✨</div>
+          <div class="spell-level-info">LEVEL <span id="spell-level-num">1</span> OF 10</div>
+        </div>
+
+        <div class="spell-journey" id="spell-journey-bar"></div>
+
+        <div class="spell-picture-area">
+          <div class="spell-scene" id="spell-scene"></div>
+          <div class="spell-emoji-big" id="spell-emoji-big">🦄</div>
+        </div>
+
+        <div class="spell-path-wrap">
+          <div class="spell-path" id="spell-path"></div>
+        </div>
+
+        <div class="spell-word-display" id="spell-word-display"></div>
+
+        <div class="spell-hint" id="spell-hint">PRESS THE LETTERS TO SPELL THE WORD!</div>
+
+        <button class="btn-back-menu" onclick="goHome()">◄ MENU  [X]</button>
+
+        <!-- Level complete transition -->
+        <div id="spell-transition">
+          <div class="spell-trans-inner">
+            <div class="spell-trans-word" id="spell-transition-word"></div>
+            <div class="spell-trans-next" id="spell-transition-next"></div>
+          </div>
+        </div>
+
+        <!-- Victory screen -->
+        <div id="spell-victory">
+          <div class="spell-victory-inner">
+            <div class="spell-victory-emoji">🦄👸</div>
+            <div class="spell-victory-title">THE PRINCESS IS RESCUED!</div>
+            <div class="spell-victory-msg">YOU SPELLED ALL 10 WORDS!</div>
+            <button class="btn-play-again" onclick="startUnicornSpell()">[ PLAY AGAIN! ]</button>
+            <button class="btn-back-menu" onclick="goHome()" style="margin-top:0.5em;align-self:center">◄ MENU  [X]</button>
+          </div>
+        </div>
+
+      </div><!-- #spelling-screen -->
+
       <!-- COMING SOON SCREEN -->
       <div class="content" id="coming-screen">
         <div class="coming-inner">
@@ -200,5 +245,6 @@
 <script src="game-numbers.js"></script>
 <script src="game-drawing.js"></script>
 <script src="game-maze.js"></script>
+<script src="game-spelling.js"></script>
 </body>
 </html>

@@ -94,6 +94,7 @@ document.addEventListener('keydown', e => {
     case 'numbers':     handleNumbersKey(e);   break;
     case 'drawing':     handleDrawingKey(e);   break;
     case 'maze':        handleMazeKey(e);      break;
+    case 'spelling':    handleSpellingKey(e);  break;
     case 'coming-soon': goHome();              break;
   }
 });
@@ -228,6 +229,17 @@ function handleDrawingKey(e) {
 }
 
 /* ══════════════════════════════════
+   SPELLING KEY HANDLER
+══════════════════════════════════ */
+function handleSpellingKey(e) {
+  if (e.key === 'x' || e.key === 'X') { goHome(); return; }
+  if (e.key.length === 1 && /[a-zA-Z]/.test(e.key)) {
+    e.preventDefault();
+    spellingKeyPress(e.key.toUpperCase());
+  }
+}
+
+/* ══════════════════════════════════
    MAZE KEY HANDLER
 ══════════════════════════════════ */
 function handleMazeKey(e) {
@@ -272,7 +284,11 @@ document.querySelectorAll('.menu-tile').forEach(tile => {
 function launchApp(app) {
   document.getElementById('main-screen').style.display = 'none';
 
-  if (app === 'numbers') {
+  if (app === 'spelling') {
+    appState = 'spelling';
+    playFanfare();
+    startUnicornSpell();
+  } else if (app === 'numbers') {
     appState = 'numbers';
     playFanfare();
     startNumberFun();
@@ -296,6 +312,8 @@ function launchApp(app) {
 function goHome() {
   if (appState === 'numbers') {
     document.getElementById('game-screen').style.display = 'none';
+  } else if (appState === 'spelling') {
+    stopUnicornSpell();
   } else if (appState === 'drawing') {
     stopPixelPainter();
     document.getElementById('drawing-screen').style.display = 'none';

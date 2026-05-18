@@ -788,3 +788,236 @@ html, body {
   letter-spacing:2px;
   margin-top:0.5em;
 }
+
+/* ══════════════════════════════════════
+   UNICORN SPELL TILE (menu)
+══════════════════════════════════════ */
+.tile-unicorn { border-color:rgba(180,80,255,0.45); }
+.tile-unicorn .tile-title { color:#cc66ff; text-shadow:0 0 8px rgba(180,80,255,0.6); }
+.tile-unicorn .tile-key   { color:#cc66ff; border-color:rgba(180,80,255,0.6); }
+.tile-unicorn:hover { border-color:#cc66ff; box-shadow:0 0 14px rgba(180,80,255,0.25); }
+.tile-unicorn:focus { border-color:#cc66ff; box-shadow:0 0 18px rgba(180,80,255,0.35); }
+
+/* ══════════════════════════════════════
+   UNICORN SPELL GAME
+══════════════════════════════════════ */
+#spelling-screen {
+  display:none; flex-direction:column; height:100%;
+  padding:clamp(6px,1.2vw,14px) clamp(10px,2vw,24px) clamp(4px,0.8vw,10px);
+}
+
+.spell-header {
+  display:flex; justify-content:space-between; align-items:center;
+  border-bottom:2px solid #cc66ff;
+  padding-bottom:clamp(3px,0.5vw,6px);
+  margin-bottom:clamp(3px,0.6vw,8px);
+  flex-shrink:0;
+}
+.spell-title {
+  font-size:clamp(14px,2.6vw,30px);
+  color:#cc66ff; text-shadow:0 0 8px rgba(180,80,255,0.5);
+}
+.spell-level-info {
+  font-size:clamp(10px,1.6vw,17px); color:var(--amber);
+}
+
+/* Journey bar */
+.spell-journey {
+  display:flex; gap:clamp(3px,0.5vw,6px);
+  align-items:center; justify-content:center;
+  margin-bottom:clamp(3px,0.6vw,8px); flex-shrink:0;
+}
+.journey-dot {
+  width:clamp(14px,2.3vw,22px); height:clamp(14px,2.3vw,22px);
+  border:1px solid var(--phosphor-dim); border-radius:3px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:clamp(7px,1.2vw,12px); color:var(--phosphor-dim);
+}
+.journey-dot.done {
+  border-color:var(--phosphor); color:var(--phosphor);
+  background:rgba(0,255,0,0.08);
+}
+.journey-dot.current {
+  border-color:#cc66ff; font-size:clamp(9px,1.6vw,15px);
+  animation:journeybounce 0.7s ease-in-out infinite alternate;
+  background:rgba(180,80,255,0.1);
+}
+.journey-castle { font-size:clamp(14px,2.4vw,22px); margin-left:clamp(3px,0.5vw,6px); }
+@keyframes journeybounce { from{transform:translateY(0)} to{transform:translateY(-4px)} }
+
+/* Picture area */
+.spell-picture-area {
+  display:flex; flex-direction:column;
+  align-items:center; gap:clamp(2px,0.3vw,4px);
+  flex-shrink:0; margin-bottom:clamp(3px,0.6vw,8px);
+}
+.spell-scene {
+  font-size:clamp(9px,1.5vw,15px); color:var(--phosphor-dim);
+  letter-spacing:2px; text-align:center;
+}
+.spell-emoji-big {
+  font-size:clamp(32px,6.5vw,76px); line-height:1;
+  animation:spellemojifloat 2s ease-in-out infinite alternate;
+}
+@keyframes spellemojifloat {
+  from{transform:translateY(0) scale(1)}
+  to  {transform:translateY(-6px) scale(1.06)}
+}
+
+/* Path */
+.spell-path-wrap { flex-shrink:0; margin-bottom:clamp(4px,0.8vw,10px); }
+
+.spell-path {
+  --path-color: #cc66ff;
+  display:flex; align-items:flex-end; justify-content:center;
+  gap:clamp(4px,0.8vw,10px);
+  padding:clamp(8px,1.5vw,16px) clamp(6px,1vw,12px) clamp(4px,0.6vw,8px);
+  position:relative;
+}
+.spell-path::before {
+  content:''; position:absolute;
+  bottom:clamp(4px,0.6vw,6px); left:4%; right:4%;
+  height:2px; background:var(--path-color); opacity:0.2;
+}
+
+.spell-step {
+  position:relative; display:flex;
+  flex-direction:column; align-items:center;
+  gap:clamp(2px,0.3vw,3px);
+  min-width:clamp(30px,5.5vw,56px);
+}
+.spell-step-inner {
+  width:clamp(30px,5.5vw,56px); height:clamp(30px,5.5vw,56px);
+  display:flex; align-items:center; justify-content:center;
+  border:2px solid var(--phosphor-dim); border-radius:4px;
+  font-size:clamp(16px,3.2vw,36px); transition:all 0.2s;
+}
+.spell-step-done .spell-step-inner {
+  border-color:var(--phosphor); background:rgba(0,255,0,0.1);
+  font-size:clamp(14px,2.6vw,28px); font-family:'VT323',monospace;
+  color:var(--phosphor-bright); text-shadow:0 0 8px rgba(0,255,0,0.5);
+  animation:letterpop 0.25s ease-out;
+}
+.spell-step-active .spell-step-inner {
+  border-color:var(--path-color);
+  box-shadow:0 0 10px var(--path-color);
+  animation:steppulse 0.9s ease-in-out infinite alternate;
+}
+.spell-step-future .spell-step-inner {
+  border-color:rgba(255,255,255,0.1); opacity:0.45;
+}
+.spell-end-marker .spell-step-inner {
+  border-style:dashed; border-color:rgba(255,255,255,0.15); opacity:0.5;
+}
+.spell-end-marker.spell-step-active .spell-step-inner {
+  border-style:solid; border-color:var(--amber);
+  opacity:1; box-shadow:0 0 14px var(--amber);
+}
+@keyframes steppulse {
+  from{box-shadow:0 0 6px var(--path-color)}
+  to  {box-shadow:0 0 18px var(--path-color), 0 0 32px rgba(255,255,255,0.15)}
+}
+
+.spell-unicorn {
+  font-size:clamp(16px,3vw,30px); line-height:1;
+  animation:unicornbounce 0.5s ease-in-out infinite alternate;
+}
+.spell-unicorn-arrived {
+  animation:unicornarrived 0.6s ease-in-out infinite alternate;
+}
+@keyframes unicornbounce {
+  from{transform:translateY(0)}
+  to  {transform:translateY(-6px)}
+}
+@keyframes unicornarrived {
+  from{transform:translateY(0) rotate(-8deg) scale(1)}
+  to  {transform:translateY(-8px) rotate(8deg) scale(1.1)}
+}
+
+/* Word blanks */
+.spell-word-display {
+  display:flex; gap:clamp(4px,0.8vw,10px);
+  justify-content:center; align-items:center;
+  margin-bottom:clamp(3px,0.5vw,7px); flex-shrink:0;
+}
+.spell-letter-tile {
+  width:clamp(26px,4.8vw,52px); height:clamp(32px,5.8vw,60px);
+  display:flex; align-items:center; justify-content:center;
+  border:2px solid rgba(255,255,255,0.12);
+  font-size:clamp(16px,3vw,34px); font-family:'VT323',monospace;
+  color:rgba(255,255,255,0.2); transition:all 0.15s;
+}
+.spell-letter-tile.filled {
+  border-color:var(--phosphor); color:var(--phosphor-bright);
+  background:rgba(0,255,0,0.08); text-shadow:0 0 8px rgba(0,255,0,0.5);
+  animation:letterpop 0.22s ease-out;
+}
+.spell-letter-tile.current {
+  border-color:#cc66ff; color:#cc66ff;
+  animation:spelltilecursor 0.9s ease-in-out infinite alternate;
+}
+@keyframes spelltilecursor {
+  from{box-shadow:0 0 4px rgba(180,80,255,0.3)}
+  to  {box-shadow:0 0 12px rgba(180,80,255,0.7)}
+}
+@keyframes letterpop {
+  0%  {transform:scale(1.4)}
+  100%{transform:scale(1)}
+}
+
+.spell-hint {
+  font-size:clamp(8px,1.3vw,13px); color:var(--phosphor-dim);
+  text-align:center; letter-spacing:1px;
+  flex-shrink:0; margin-bottom:clamp(2px,0.3vw,4px);
+}
+
+/* Shake / wrong flash */
+@keyframes spellshake {
+  0%,100%{transform:translateX(0)}
+  20%{transform:translateX(-8px)} 40%{transform:translateX(8px)}
+  60%{transform:translateX(-5px)} 80%{transform:translateX(5px)}
+}
+.spell-shake { animation:spellshake 0.35s ease-out; }
+@keyframes wrongflash {
+  0%,100%{opacity:1} 50%{opacity:0.25}
+}
+.spell-wrong-flash { animation:wrongflash 0.3s ease-out; }
+
+/* Level transition overlay */
+#spell-transition {
+  display:none; position:absolute; inset:0;
+  background:rgba(5,5,5,0.9);
+  flex-direction:column; align-items:center; justify-content:center;
+  z-index:25; gap:0.5em;
+}
+.spell-trans-word {
+  font-size:clamp(28px,5.5vw,64px);
+  color:var(--phosphor-bright); text-shadow:0 0 16px rgba(0,255,0,0.7);
+  letter-spacing:8px;
+  animation:letterpop 0.4s ease-out;
+}
+.spell-trans-next {
+  font-size:clamp(11px,2vw,20px); color:var(--phosphor-dim); letter-spacing:2px;
+  text-align:center; padding:0 1em;
+}
+
+/* Victory overlay */
+#spell-victory {
+  display:none; position:absolute; inset:0;
+  background:rgba(5,5,5,0.92);
+  flex-direction:column; align-items:center; justify-content:center;
+  gap:0.5em; z-index:25;
+}
+.spell-victory-emoji {
+  font-size:clamp(40px,8.5vw,100px);
+  animation:mazebob 0.7s ease-in-out infinite alternate;
+}
+.spell-victory-title {
+  font-size:clamp(18px,3.6vw,44px); color:var(--amber);
+  text-shadow:0 0 18px rgba(255,176,0,0.8); letter-spacing:3px;
+  text-align:center; padding:0 0.5em;
+}
+.spell-victory-msg {
+  font-size:clamp(12px,2vw,22px); color:var(--phosphor-bright); letter-spacing:2px;
+  margin-bottom:0.4em;
+}
