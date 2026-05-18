@@ -171,19 +171,6 @@ function startPixelPainter() {
   });
   ro.observe(paintCanvas);
 
-  _drawKeyHandler = e => {
-    if (!drawingActive) return;
-    const skip = ['Shift','Control','Alt','Meta','CapsLock','Tab',
-      'F1','F2','F3','F4','F5','F6','F7','F8','F9','F10','F11','F12'];
-    if (skip.includes(e.key)) return;
-    if (!paintCanvas) return;
-    paintBlob(
-      20 + Math.random() * (paintCanvas.width  - 40),
-      20 + Math.random() * (paintCanvas.height - 40)
-    );
-  };
-  document.addEventListener('keydown', _drawKeyHandler);
-
   paintCanvas.addEventListener('click', e => {
     if (!drawingActive) return;
     const rect   = paintCanvas.getBoundingClientRect();

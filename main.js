@@ -14,7 +14,6 @@ function playKeyTone(keyLabel) {
     const osc  = c.createOscillator();
     const gain = c.createGain();
     osc.connect(gain); gain.connect(c.destination);
-
     const code = (keyLabel.charCodeAt ? keyLabel.charCodeAt(0) : 65);
     const freq = 180 + (code % 48) * 16;
     osc.type = 'square';
@@ -44,30 +43,34 @@ function playFanfare() {
 }
 
 /* ══════════════════════════════════
+   STATE
+══════════════════════════════════ */
+// 'off' | 'booting' | 'menu' | 'numbers' | 'drawing' | 'maze' | 'coming-soon'
+let appState = 'off';
+let menuFocusIndex = 0;
+
+/* ══════════════════════════════════
    KEY DISPLAY
 ══════════════════════════════════ */
 const keyDisplay = document.getElementById('key-display');
 
-document.addEventListener('keydown', e => {
-  const skip = ['Shift','Control','Alt','Meta','CapsLock','Tab','F1','F2','F3','F4','F5','F6','F7','F8','F9','F10','F11','F12'];
-  if (skip.includes(e.key)) return;
+const SKIP_KEYS = new Set([
+  'Shift','Control','Alt','Meta','CapsLock','Tab','Escape',
+  'F1','F2','F3','F4','F5','F6','F7','F8','F9','F10','F11','F12'
+]);
 
-  const label =
-      e.key === ' '           ? 'SPC'
-    : e.key === 'Enter'       ? 'ENT'
-    : e.key === 'Backspace'   ? '⌫'
-    : e.key === 'Delete'      ? 'DEL'
-    : e.key === 'Escape'      ? 'ESC'
-    : e.key === 'ArrowLeft'   ? '◄'
-    : e.key === 'ArrowRight'  ? '►'
-    : e.key === 'ArrowUp'     ? '▲'
-    : e.key === 'ArrowDown'   ? '▼'
-    : e.key.length === 1      ? e.key.toUpperCase()
-    : e.key.substring(0,3).toUpperCase();
-
-  playKeyTone(label);
-  showKeyBubble(label);
-});
+function labelForKey(key) {
+  if (key === ' ')          return 'SPC';
+  if (key === 'Enter')      return 'ENT';
+  if (key === 'Backspace')  return '⌫';
+  if (key === 'Delete')     return 'DEL';
+  if (key === 'ArrowLeft')  return '◄';
+  if (key === 'ArrowRight') return '►';
+  if (key === 'ArrowUp')    return '▲';
+  if (key === 'ArrowDown')  return '▼';
+  if (key.length === 1)     return key.toUpperCase();
+  return key.substring(0, 3).toUpperCase();
+}
 
 function showKeyBubble(label) {
   while (keyDisplay.children.length >= 5) keyDisplay.removeChild(keyDisplay.lastChild);
@@ -78,10 +81,32 @@ function showKeyBubble(label) {
   setTimeout(() => { if (b.parentNode) b.remove(); }, 1100);
 }
 
+document.addEventListener('keydown', e => {
+  if (SKIP_KEYS.has(e.key)) return;
+  const label = labelForKey(e.key);
+  playKeyTone(label);
+  showKeyBubble(label);
+
+  switch (appState) {
+    case 'off':         bootUp();              break;
+    case 'booting':                            break;
+    case 'menu':        handleMenuKey(e);      break;
+    case 'numbers':     handleNumbersKey(e);   break;
+    case 'drawing':     handleDrawingKey(e);   break;
+    case 'maze':        handleMazeKey(e);      break;
+    case 'coming-soon': goHome();              break;
+  }
+});
+
 /* ══════════════════════════════════
-   BOOT SEQUENCE
+   POWER & BOOT
 ══════════════════════════════════ */
-const bootLines = [
+function togglePower() {
+  if (appState !== 'off') return;
+  bootUp();
+}
+
+const BOOT_LINES = [
   { text:'** KIDPUTER SYSTEMS INC. **',           color:'#aaffaa', delay:100  },
   { text:'** MODEL KP-64 — READY TO LEARN! **',   color:'#aaffaa', delay:200  },
   { text:'',                                       color:'#33ff33', delay:300  },
@@ -104,23 +129,35 @@ const bootLines = [
   { text:'STARTING KIDPUTER...',                  color:'#33ff33', delay:2950 },
 ];
 
-const bootEl = document.getElementById('boot-screen');
-bootLines.forEach(({ text, color, delay }) => {
-  setTimeout(() => {
-    const ln = document.createElement('div');
-    ln.className = 'boot-line';
-    ln.style.color = color;
-    ln.style.fontSize = 'clamp(10px,1.8vw,18px)';
-    ln.style.lineHeight = '1.55';
-    ln.textContent = text;
-    bootEl.appendChild(ln);
-  }, delay);
-});
+function bootUp() {
+  if (appState !== 'off') return;
+  appState = 'booting';
 
-setTimeout(() => {
-  bootEl.style.display = 'none';
-  document.getElementById('main-screen').style.display = 'flex';
-}, 3400);
+  document.getElementById('off-screen').style.display = 'none';
+  document.getElementById('power-btn').classList.add('on');
+
+  const bootEl = document.getElementById('boot-screen');
+  bootEl.innerHTML = '';
+  bootEl.style.display = 'flex';
+
+  BOOT_LINES.forEach(({ text, color, delay }) => {
+    setTimeout(() => {
+      if (appState !== 'booting') return;
+      const ln = document.createElement('div');
+      ln.className = 'boot-line';
+      ln.style.color = color;
+      ln.style.fontSize = 'clamp(10px,1.8vw,18px)';
+      ln.style.lineHeight = '1.55';
+      ln.textContent = text;
+      bootEl.appendChild(ln);
+    }, delay);
+  });
+
+  setTimeout(() => {
+    bootEl.style.display = 'none';
+    showMenu();
+  }, 3400);
+}
 
 /* ══════════════════════════════════
    CLOCK
@@ -128,14 +165,94 @@ setTimeout(() => {
 function updateClock() {
   const now = new Date();
   const el = document.getElementById('clock-display');
-  if (el) el.textContent = `TIME: ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
+  if (el) el.textContent =
+    `TIME: ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
 }
 setInterval(updateClock, 1000);
 updateClock();
 
 /* ══════════════════════════════════
+   MENU KEY HANDLER
+══════════════════════════════════ */
+function handleMenuKey(e) {
+  if (e.key === '1') { launchApp('spelling'); return; }
+  if (e.key === '2') { launchApp('numbers');  return; }
+  if (e.key === '3') { launchApp('drawing');  return; }
+  if (e.key === '4') { launchApp('maze');     return; }
+
+  const tiles = document.querySelectorAll('.menu-tile');
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+    e.preventDefault();
+    menuFocusIndex = (menuFocusIndex + 1) % tiles.length;
+    tiles[menuFocusIndex].focus();
+  } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+    e.preventDefault();
+    menuFocusIndex = (menuFocusIndex - 1 + tiles.length) % tiles.length;
+    tiles[menuFocusIndex].focus();
+  } else if (e.key === 'Enter' || e.key === ' ') {
+    e.preventDefault();
+    tiles[menuFocusIndex].click();
+  }
+}
+
+/* ══════════════════════════════════
+   NUMBERS KEY HANDLER
+══════════════════════════════════ */
+function handleNumbersKey(e) {
+  if (e.key === 'x' || e.key === 'X') { goHome(); return; }
+  if (G.locked) return;
+  if (e.key >= '0' && e.key <= '9') {
+    e.preventDefault();
+    numpadPress(e.key, false);
+  } else if (e.key === 'Backspace') {
+    e.preventDefault();
+    const inp = document.getElementById('answer-input');
+    inp.value = inp.value.slice(0, -1);
+  } else if (e.key === 'Enter') {
+    e.preventDefault();
+    checkAnswer();
+  }
+}
+
+/* ══════════════════════════════════
+   DRAWING KEY HANDLER
+══════════════════════════════════ */
+function handleDrawingKey(e) {
+  if (e.key === 'x' || e.key === 'X') { goHome(); return; }
+  if (e.key === 'c' || e.key === 'C') { clearCanvas(); return; }
+  if (!paintCanvas || !drawingActive) return;
+  paintBlob(
+    20 + Math.random() * (paintCanvas.width  - 40),
+    20 + Math.random() * (paintCanvas.height - 40)
+  );
+}
+
+/* ══════════════════════════════════
+   MAZE KEY HANDLER
+══════════════════════════════════ */
+function handleMazeKey(e) {
+  if (e.key === 'x' || e.key === 'X') { goHome(); return; }
+  if (mazeWon) {
+    e.preventDefault();
+    mazePlayAgain();
+    return;
+  }
+  const map = {
+    ArrowUp:'up', ArrowDown:'down', ArrowLeft:'left', ArrowRight:'right',
+    w:'up', W:'up', s:'down', S:'down', a:'left', A:'left', d:'right', D:'right',
+  };
+  if (map[e.key]) { e.preventDefault(); mazeMove(map[e.key]); }
+}
+
+/* ══════════════════════════════════
    MENU INTERACTIONS
 ══════════════════════════════════ */
+function showMenu() {
+  appState = 'menu';
+  menuFocusIndex = 0;
+  document.getElementById('main-screen').style.display = 'flex';
+}
+
 function addRipple(e, tile) {
   const r = document.createElement('div');
   r.className = 'ripple';
@@ -147,41 +264,47 @@ function addRipple(e, tile) {
   tile.appendChild(r);
   setTimeout(() => r.remove(), 400);
 }
+
 document.querySelectorAll('.menu-tile').forEach(tile => {
   tile.addEventListener('mousedown', e => addRipple(e, tile));
-  tile.addEventListener('keydown',   e => { if (e.key==='Enter'||e.key===' ') tile.click(); });
 });
 
 function launchApp(app) {
+  document.getElementById('main-screen').style.display = 'none';
+
   if (app === 'numbers') {
+    appState = 'numbers';
     playFanfare();
-    document.getElementById('main-screen').style.display = 'none';
     startNumberFun();
   } else if (app === 'drawing') {
+    appState = 'drawing';
     playFanfare();
-    document.getElementById('main-screen').style.display = 'none';
     startPixelPainter();
   } else if (app === 'maze') {
+    appState = 'maze';
     playFanfare();
-    document.getElementById('main-screen').style.display = 'none';
     startBunnyMaze();
   } else {
+    appState = 'coming-soon';
     const names = { spelling:'SPELLING BEE', stories:'STORY TIME' };
-    const main = document.getElementById('main-screen');
-    main.innerHTML = `
-      <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1em;">
-        <div style="font-size:clamp(18px,4vw,46px);color:#aaffaa;text-shadow:0 0 10px rgba(0,255,0,0.5);">
-          *** ${names[app]||app.toUpperCase()} ***
-        </div>
-        <div style="font-size:clamp(12px,2vw,22px);color:#33ff33;">COMING SOON!<span class="cursor-blink"></span></div>
-        <div style="font-size:clamp(9px,1.5vw,16px);color:#1a8a1a;margin-top:1em;">MORE GAMES ON THE WAY!</div>
-        <div style="margin-top:2em;">
-          <button onclick="goHome()" style="background:transparent;border:2px solid #33ff33;color:#33ff33;
-            font-family:'VT323',monospace;font-size:clamp(14px,2.5vw,26px);padding:0.3em 1.2em;
-            cursor:pointer;letter-spacing:2px;text-shadow:0 0 6px rgba(0,255,0,0.5);">[ BACK TO MENU ]</button>
-        </div>
-      </div>`;
+    const title = document.getElementById('coming-title');
+    if (title) title.textContent = `*** ${names[app] || app.toUpperCase()} ***`;
+    document.getElementById('coming-screen').style.display = 'flex';
   }
 }
 
-function goHome() { location.reload(); }
+function goHome() {
+  if (appState === 'numbers') {
+    document.getElementById('game-screen').style.display = 'none';
+  } else if (appState === 'drawing') {
+    stopPixelPainter();
+    document.getElementById('drawing-screen').style.display = 'none';
+  } else if (appState === 'maze') {
+    stopBunnyMaze();
+    document.getElementById('maze-screen').style.display = 'none';
+    document.getElementById('maze-win-overlay').style.display = 'none';
+  } else if (appState === 'coming-soon') {
+    document.getElementById('coming-screen').style.display = 'none';
+  }
+  showMenu();
+}

@@ -154,8 +154,23 @@ html, body {
 .text-bright { color: var(--phosphor-bright); text-shadow: 0 0 8px rgba(0,255,0,0.6); }
 .text-dim { color: var(--phosphor-dim); }
 
+/* ─── OFF SCREEN ─── */
+#off-screen {
+  display: flex; align-items: center; justify-content: center;
+}
+.off-hint {
+  font-size: clamp(9px, 1.6vw, 16px);
+  color: #111;
+  letter-spacing: 3px;
+  animation: offhintpulse 3s ease-in-out infinite;
+}
+@keyframes offhintpulse {
+  0%,100% { opacity: 0; }
+  50%     { opacity: 1; }
+}
+
 /* ─── BOOT ─── */
-#boot-screen { display: flex; flex-direction: column; }
+#boot-screen { display: none; flex-direction: column; }
 .boot-line { opacity: 0; animation: bootappear 0.05s forwards; white-space: nowrap; }
 @keyframes bootappear { to { opacity:1; } }
 
@@ -229,6 +244,15 @@ html, body {
   text-shadow:0 0 6px rgba(0,255,0,0.5); line-height:1;
 }
 .tile-subtitle { font-size:clamp(9px,1.5vw,16px); color:var(--phosphor-dim); line-height:1.2; }
+.tile-key {
+  position:absolute; bottom:clamp(5px,1vw,10px); left:clamp(5px,1vw,10px);
+  width:clamp(16px,2.8vw,26px); height:clamp(16px,2.8vw,26px);
+  border:1px solid currentColor; border-radius:3px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:clamp(10px,1.8vw,18px); opacity:0.7;
+  background:rgba(0,0,0,0.35);
+  line-height:1;
+}
 .tile-badge {
   position:absolute; top:clamp(4px,0.8vw,8px); right:clamp(4px,0.8vw,8px);
   font-size:clamp(7px,1.2vw,12px); padding:1px 5px; border:1px solid;
@@ -286,13 +310,50 @@ html, body {
   gap:clamp(8px,2vw,24px);
   box-shadow:inset 0 2px 4px rgba(0,0,0,0.5);
 }
-.power-led {
-  width:clamp(6px,1.2vw,12px); height:clamp(6px,1.2vw,12px);
-  border-radius:50%; background:#00ff44;
-  box-shadow:0 0 6px #00ff44,0 0 12px rgba(0,255,68,0.4);
+
+/* Power button — off state is dark red, on state is green */
+.power-btn {
+  width:clamp(16px,2.8vw,28px); height:clamp(16px,2.8vw,28px);
+  border-radius:50%;
+  background:radial-gradient(circle at 35% 35%, #3a0000, #1a0000);
+  border:2px solid #440000;
+  box-shadow:0 0 4px rgba(80,0,0,0.4), inset 0 1px 2px rgba(255,255,255,0.05);
+  cursor:pointer;
+  transition:background 0.3s, border-color 0.3s, box-shadow 0.3s, transform 0.1s;
+  position:relative;
+}
+.power-btn::after {
+  content:'';
+  position:absolute; inset:20%;
+  border-radius:50%;
+  background:#330000;
+  box-shadow:0 0 3px rgba(80,0,0,0.6);
+  transition:background 0.3s, box-shadow 0.3s;
+}
+.power-btn:hover {
+  background:radial-gradient(circle at 35% 35%, #5a0000, #2a0000);
+  border-color:#880000;
+  box-shadow:0 0 8px rgba(140,0,0,0.6), inset 0 1px 2px rgba(255,255,255,0.05);
+  transform:scale(1.1);
+}
+.power-btn:hover::after {
+  background:#550000;
+  box-shadow:0 0 5px rgba(120,0,0,0.8);
+}
+.power-btn.on {
+  background:radial-gradient(circle at 35% 35%, #00bb44, #005522);
+  border-color:#00ff44;
+  box-shadow:0 0 8px #00ff44, 0 0 16px rgba(0,255,68,0.4), inset 0 1px 2px rgba(255,255,255,0.1);
+  cursor:default;
   animation:ledpulse 2s ease-in-out infinite;
 }
-@keyframes ledpulse { 0%,100%{opacity:1} 50%{opacity:0.6} }
+.power-btn.on::after {
+  background:#00ff44;
+  box-shadow:0 0 6px #00ff44;
+}
+.power-btn.on:hover { transform:none; }
+@keyframes ledpulse { 0%,100%{opacity:1} 50%{opacity:0.65} }
+
 .monitor-knob {
   width:clamp(10px,2vw,20px); height:clamp(10px,2vw,20px);
   border-radius:50%;
@@ -690,3 +751,40 @@ html, body {
   60%{transform:translateX(-5px)} 80%{transform:translateX(5px)}
 }
 .shaking { animation:shake 0.35s ease-out; }
+
+.maze-win-hint {
+  font-size:clamp(9px,1.5vw,15px);
+  color:var(--phosphor-dim);
+  letter-spacing:2px;
+  margin-top:0.2em;
+}
+
+/* ══════════════════════════════════════
+   COMING SOON SCREEN
+══════════════════════════════════════ */
+#coming-screen { display:none; align-items:center; justify-content:center; }
+
+.coming-inner {
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  gap:clamp(8px,1.5vw,20px);
+  text-align:center;
+}
+
+.coming-title {
+  font-size:clamp(18px,4vw,46px);
+  color:var(--phosphor-bright);
+  text-shadow:0 0 10px rgba(0,255,0,0.5);
+}
+
+.coming-msg {
+  font-size:clamp(12px,2vw,22px);
+  color:var(--phosphor);
+}
+
+.coming-sub {
+  font-size:clamp(9px,1.5vw,15px);
+  color:var(--phosphor-dim);
+  letter-spacing:2px;
+  margin-top:0.5em;
+}
