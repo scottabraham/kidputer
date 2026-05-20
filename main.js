@@ -50,6 +50,87 @@ let appState = 'off';
 let menuFocusIndex = 0;
 
 /* ══════════════════════════════════
+   HOLD-KEY POWER CONTROL
+══════════════════════════════════ */
+const HOLD_ON_MS  = 1400;
+const HOLD_OFF_MS = 1800;
+let _holdKey     = null;
+let _holdTimer   = null;
+let _holdRafId   = null;
+let _holdStart   = 0;
+
+function _startHold(key) {
+  if (_holdKey === key) return;
+  _cancelHold();
+  _holdKey   = key;
+  _holdStart = performance.now();
+
+  if (key === '1') {
+    document.getElementById('power-btn').classList.add('holding-on');
+    _holdTimer = setTimeout(() => { _cancelHold(); bootUp(); }, HOLD_ON_MS);
+  } else if (key === '0') {
+    const prompt = document.getElementById('poweroff-prompt');
+    const bar    = document.getElementById('poweroff-bar');
+    prompt.classList.add('visible');
+    bar.style.transition = `width ${HOLD_OFF_MS}ms linear`;
+    bar.style.width = '0%';
+    requestAnimationFrame(() => { bar.style.width = '100%'; });
+    _holdTimer = setTimeout(() => { _cancelHold(); _executeShutdown(); }, HOLD_OFF_MS);
+  }
+}
+
+function _cancelHold() {
+  if (_holdTimer) { clearTimeout(_holdTimer); _holdTimer = null; }
+  _holdKey = null;
+  document.getElementById('power-btn').classList.remove('holding-on');
+  const prompt = document.getElementById('poweroff-prompt');
+  const bar    = document.getElementById('poweroff-bar');
+  prompt.classList.remove('visible');
+  bar.style.transition = 'none';
+  bar.style.width = '0%';
+}
+
+function _executeShutdown() {
+  const prevState = appState;
+  if (prevState === 'numbers')  document.getElementById('game-screen').style.display    = 'none';
+  if (prevState === 'spelling') stopUnicornSpell();
+  if (prevState === 'drawing')  { stopPixelPainter(); document.getElementById('drawing-screen').style.display = 'none'; }
+  if (prevState === 'maze')     { stopBunnyMaze(); document.getElementById('maze-screen').style.display = 'none'; document.getElementById('maze-win-overlay').style.display = 'none'; }
+  if (prevState === 'coming-soon') document.getElementById('coming-screen').style.display = 'none';
+  if (prevState === 'menu')    document.getElementById('main-screen').style.display     = 'none';
+
+  appState = 'booting';
+  const bootEl = document.getElementById('boot-screen');
+  bootEl.innerHTML = '';
+  bootEl.style.display = 'flex';
+
+  const lines = [
+    { text:'SAVING PROGRESS...', color:'#33ff33', delay:0   },
+    { text:'CLOSING PROGRAMS...',color:'#33ff33', delay:400 },
+    { text:'GOODBYE! 👋',        color:'#aaffaa', delay:800 },
+  ];
+  lines.forEach(({ text, color, delay }) => {
+    setTimeout(() => {
+      const ln = document.createElement('div');
+      ln.className = 'boot-line';
+      ln.style.color = color;
+      ln.style.fontSize = 'clamp(10px,1.8vw,18px)';
+      ln.style.lineHeight = '1.55';
+      ln.textContent = text;
+      bootEl.appendChild(ln);
+    }, delay);
+  });
+
+  setTimeout(() => {
+    bootEl.style.display = 'none';
+    bootEl.innerHTML = '';
+    document.getElementById('power-btn').classList.remove('on');
+    document.getElementById('off-screen').style.display = 'flex';
+    appState = 'off';
+  }, 1400);
+}
+
+/* ══════════════════════════════════
    KEY DISPLAY
 ══════════════════════════════════ */
 const keyDisplay = document.getElementById('key-display');
@@ -82,14 +163,23 @@ function showKeyBubble(label) {
 }
 
 document.addEventListener('keydown', e => {
-  if (SKIP_KEYS.has(e.key)) return;
+  if (SKIP_KEYS.has(e.key) || e.repeat) return;
   const label = labelForKey(e.key);
   playKeyTone(label);
   showKeyBubble(label);
 
+  // Hold [0] to power off (not during number input where 0 is a digit)
+  if (e.key === '0' && appState !== 'off' && appState !== 'booting' && appState !== 'numbers') {
+    _startHold('0');
+    return;
+  }
+
   switch (appState) {
-    case 'off':         bootUp();              break;
-    case 'booting':                            break;
+    case 'off':
+      if (e.key === '1') _startHold('1');
+      break;
+    case 'booting':
+      break;
     case 'menu':        handleMenuKey(e);      break;
     case 'numbers':     handleNumbersKey(e);   break;
     case 'drawing':     handleDrawingKey(e);   break;
@@ -99,14 +189,13 @@ document.addEventListener('keydown', e => {
   }
 });
 
+document.addEventListener('keyup', e => {
+  if (e.key === _holdKey) _cancelHold();
+});
+
 /* ══════════════════════════════════
    POWER & BOOT
 ══════════════════════════════════ */
-function togglePower() {
-  if (appState !== 'off') return;
-  bootUp();
-}
-
 const BOOT_LINES = [
   { text:'** KIDPUTER SYSTEMS INC. **',           color:'#aaffaa', delay:100  },
   { text:'** MODEL KP-64 — READY TO LEARN! **',   color:'#aaffaa', delay:200  },

@@ -22,7 +22,7 @@
 
       <!-- OFF SCREEN — shown when machine is powered off -->
       <div class="content" id="off-screen">
-        <div class="off-hint">PRESS POWER BUTTON OR ANY KEY TO START</div>
+        <div class="off-hint">HOLD [1] TO POWER ON</div>
       </div>
 
       <!-- BOOT SCREEN -->
@@ -235,9 +235,16 @@
   <div class="monitor-bottom">
     <div class="monitor-knob"></div>
     <div class="monitor-knob"></div>
-    <div class="power-btn" id="power-btn" onclick="togglePower()" title="POWER"></div>
     <div class="monitor-knob"></div>
     <div class="monitor-knob"></div>
+    <div class="power-btn" id="power-btn" title="POWER"></div>
+  </div>
+
+  <!-- Power-off hold progress overlay -->
+  <div id="poweroff-prompt">
+    <div class="poweroff-msg">SHUTTING DOWN...</div>
+    <div class="poweroff-bar-wrap"><div class="poweroff-bar" id="poweroff-bar"></div></div>
+    <div class="poweroff-sub">KEEP HOLDING [0]</div>
   </div>
 </div>
 
